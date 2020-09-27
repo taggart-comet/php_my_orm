@@ -1,0 +1,9 @@
+.idea
+/.idea/
+/modules/vendor/*
+/cron/locks/
+/logs/
+
+/private/custom.php
+/private/main.php
+/private/public.php
