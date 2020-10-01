@@ -99,6 +99,11 @@ class Model {
 			}
 
 			$this->_field_values[$name] = $this->_field_types[$name]->prepareValue($value);
+
+			// checking if primary key to add there
+			if ($this->_field_types[$name]->is_primary_key) {
+				$this->primary_key_values[$name] = $this->_field_types[$name]->prepareValue($value);
+			}
 			return;
 		}
 
@@ -161,11 +166,20 @@ class Model {
 		$this->_is_fetched = true;
 
 		# the object is newly created -> inserting
-		return SqlManager::insert(
+		$result = SqlManager::insert(
 			$this->db_name,
 			$this->table_name,
 			$this->_getSetForInsert()
 		);
+
+		// checking if we need to assign an autoincrement primary field value
+		// that was given to the row in the mysql
+		if (count($this->primary_keys) == 1 && $this->_field_types[$this->primary_keys[0]]->auto_increment) {
+			$this->_field_values[$this->primary_keys[0]]      = $this->_field_types[$this->primary_keys[0]]->prepareValue($result);
+			$this->primary_key_values[$this->primary_keys[0]] = $this->_field_types[$this->primary_keys[0]]->prepareValue($result);
+		}
+
+		return $result;
 	}
 
 	final public function saveOrUpdate($on_update_set) {

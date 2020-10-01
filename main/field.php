@@ -3,9 +3,13 @@
 namespace PhpMyOrm;
 
 use PhpMyOrm\sql\Utils;
+use SebastianBergmann\CodeCoverage\Report\PHP;
 
 /**
  * All the mysql table field classes are here
+ * Everyone of them prepares given by user values
+ * as for use in a query
+ * as also to use after fetching the data from db
  */
 class Field {
 
@@ -387,6 +391,10 @@ class JSONField extends Field {
 
 	public function prepareValue($value) {
 
+		if (!is_array($value)) {
+			return $value;
+		}
+
 		return json_encode($value);
 	}
 
@@ -394,12 +402,7 @@ class JSONField extends Field {
 
 		$output = json_decode($value, true, 512, JSON_BIGINT_AS_STRING);
 		if (!is_array($output)) {
-
-			// this hell is because of escaping braces, better to find out ho to make not so ugly
-			$output = json_decode($output, true, 512, JSON_BIGINT_AS_STRING);
-			if (!is_array($output)) {
-				return [];
-			}
+			return [];
 		}
 		return $output;
 	}

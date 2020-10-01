@@ -4,11 +4,13 @@ namespace PhpMyOrm\migrate;
 
 use PhpMyOrm\Model;
 
-// checks table on structure and indexes
-// form a list of migrations then asks user
-// if he's okay to implement this list right now,
-// knowing that he can potentially loose hist data
-// or get hist table locked for some time (depending on it's size)
+/**
+ * Checks table on structure and indexes
+ * form a list of migrations then asks user
+ * if he's okay to implement this list right now,
+ * knowing that he can potentially loose hist data
+ * or get hist table locked for some time (depending on it's size)
+ */
 
 class MigrateManager {
 
@@ -54,12 +56,9 @@ class MigrateManager {
 
 	protected function checkModel($model_class) {
 
-//		self::_log("Checking `{$model_class}`");
-
 		// checking first that paths to model classes typed correctly in th config
 		try {
-			/** @var Model $model_instance */
-			$model_instance = new $model_class();
+			new $model_class();
 		} catch (\Error $e) {
 			self::_log("Class `{$model_class}` was not found! Make sure to include your classes for this script!", self::ERROR);
 			return;

@@ -17,7 +17,7 @@ class PhpMyOrmUnitTestPrimary extends TestCase {
 	/** @var TestModel $testing_model */
 	public $testing_model = 'PhpMyOrm\test\TestModel';
 //	public $testing_model = 'PhpMyOrm\test\TestModelAuto';
-//		public $testing_model = 'PhpMyOrm\test\TestModelMultiPrimary';
+//	public $testing_model = 'PhpMyOrm\test\TestModelMultiPrimary';
 
 	/** @test */
 	// ../modules/vendor/bin/phpunit --filter insertNew tests/PhpMyOrmUnitTestPrimary
@@ -326,6 +326,59 @@ class PhpMyOrmUnitTestPrimary extends TestCase {
 
 		// compare that desc is actually more than asc
 		self::assertTrue($asc_obj->{$pk} < $desc_obj->{$pk});
+	}
+
+	/** @test */
+	// ../modules/vendor/bin/phpunit --filter checkValues tests/PhpMyOrmUnitTestPrimary
+	public function checkValues() {
+
+		// -------------------------------------------------------
+		// inserting an array
+		// -------------------------------------------------------
+		/** @var TestModel $model_obj */
+		$model_obj = new $this->testing_model();
+
+		// for multi key model
+		if (is_array($model_obj->pk())) {
+			$model_obj->comment_id = mt_rand(1, time());
+			$model_obj->article_id = str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+		}
+
+		// int
+		$model_obj->date_added = time();
+
+		// string
+		$model_obj->content = 'Test content at ' . date('h:i d M Y');
+
+		// json (array)
+		$model_obj->extra = [
+			'date_edited' => time(),
+			'test'        => [
+				'date_tested' => time(),
+				'string'      => 'string',
+			],
+		];
+
+		$insert_id = $model_obj->save();
+
+		self::assertIsNumeric($insert_id);
+
+		// -------------------------------------------------------
+		// checking that an array comes out
+		// -------------------------------------------------------
+
+		/** @var TestModel $inserted_obj */
+		$inserted_obj = $this->testing_model::objects()->filter_primary($model_obj->pk())->get();
+
+		// int
+		self::assertIsNumeric($inserted_obj->date_added);
+
+		// string
+		self::assertIsString($inserted_obj->content);
+
+		// json (array)
+		self::assertIsArray($inserted_obj->extra);
+		self::assertIsNumeric($inserted_obj->extra['date_edited']);
 	}
 
 }
