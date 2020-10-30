@@ -10,7 +10,7 @@ use PhpMyOrm\sql\Utils;
 /**
  * Main interface class, that gets implemented by model classes
  */
-class Model {
+abstract class Model {
 
 	// -------------------------------------------------------
 	// CUSTOMIZABLE
@@ -235,15 +235,12 @@ class Model {
 		// -------------------------------------------------------
 		$prepared_insert_ar = [];
 		foreach ($insert_ar as $set) {
-			$prepared_set = [];
 			foreach ($set as $field_name => $value) {
 
 				// checking if field exists
 				if (!isset($instance_fields[$field_name])) {
 					throw new ModelPropertyDoesExist("Field `{$field_name}` is not present in the model");
 				}
-
-				$prepared_set[$field_name] = $instance_fields[$field_name]->prepareValue($value);
 			}
 			$prepared_insert_ar[] = $set;
 		}
