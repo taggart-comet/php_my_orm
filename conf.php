@@ -5,18 +5,18 @@ return [
 	# defining databases
 	'DATABASES'     => [
 		'default' => [
-			'database_name' => 'database_name',
+			'database_name' => '_orm_test',
 			'user'          => 'user',
-			'password'      => 'pass',
+			'password'      => 'root2',
 			'host'          => '127.0.0.1',
 			'port'          => '3306',
 			'use_ssl'       => false,
 		],
-		'logs' => [
-			'database_name' => 'database_name',
+		'default_2' => [
+			'database_name' => '_orm_test',
 			'user'          => 'user',
-			'password'      => 'pass',
-			'host'          => '172.16.0.12',
+			'password'      => 'root2',
+			'host'          => '127.0.0.1',
 			'port'          => '3306',
 			'use_ssl'       => false,
 		],
